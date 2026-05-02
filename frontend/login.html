@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <script src="/vendor/axios.min.js" defer></script>
+    <script src="/assets/common.js" defer></script>
+    <script src="/assets/js/login.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="navigation">
+            <div>
+                <h1><a href="/"><span class="primary-text">Task</span>Flow</a></h1>
+            </div>
+            <div id="unauthed-links">
+                <a href="/login.html" class="primary-text">Login</a>
+                <a href="/register.html" class="primary-text">Register</a>
+            </div>
+            <div id="authed-links">
+                <a href="/profile.html" class="primary-text">Dashboard</a>
+                <a href="#" id="logout-link" class="primary-text">Logout</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <h2>Login</h2>
+            <form id="login-form" class="auth-form">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+    </footer>
+</body>
+</html>
