@@ -11,13 +11,13 @@ Application web de gestion de projets collaboratifs.
 - Feature 9: Historique des activités
 - Feature 10: Notifications et gestion des événements côté client
 
-### Marouanne
+### Marouane
 
 - Feature 2: Création et gestion des projets
 - Feature 3: Gestion des tâches
 - Feature 4: Assignation des tâches aux membres
 
-### Soufianne
+### Soufiane
 
 - Feature 5: Tableau de bord personnel
 - Feature 6: Filtrage, recherche et pagination
