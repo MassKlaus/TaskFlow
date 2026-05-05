@@ -23,8 +23,11 @@ export async function updateProject(projectId, title, description, deadline, sta
     return await existingProject.save();
 }
 
-export async function getProjectsByOwner(ownerId) {
-    return await projectSchema.find({ owner: ownerId });
+export async function getProjectsByOwner(ownerId, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    return await projectSchema.find({ owner: ownerId })
+        .skip(skip)
+        .limit(limit);
 }
 
 export async function getProjectById(projectId) {
