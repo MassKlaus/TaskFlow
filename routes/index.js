@@ -1,6 +1,9 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { checkUserPasswordByEmail, createUser, getUserByEmail } from "../services/user.js";
+import projectRoutes from "./project.js";
+import taskRoutes from "./task.js";
+
 
 const router = express.Router();
 
@@ -79,7 +82,6 @@ router.use((req, res, next) => {
 });
 
 // Authenticated routes
-
 router.get("/auth/me", async (req, res) => {
     try {
         const user = await getUserByEmail(req.user.email);
@@ -92,5 +94,9 @@ router.get("/auth/me", async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use("/projects", projectRoutes);
+router.use("/tasks", taskRoutes);
+
 
 export default router;
