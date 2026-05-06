@@ -14,14 +14,14 @@ export const updateTaskStatus = async (taskId, status) => {
     return Task.findByIdAndUpdate(
         taskId,
         { status, updatedAt: Date.now() },
-        { new: true }
+        { new: true, runValidators: true, context: "query" }
     );
 };
 
 export const updateTask = async (taskId, title, priority, status, project) => {
     const data = { title, priority, status, project, updatedAt: Date.now() };
     Object.keys(data).forEach(key => data[key] === undefined && delete data[key]);
-    return Task.findByIdAndUpdate(taskId, data, { new: true });
+    return Task.findByIdAndUpdate(taskId, data, { new: true, runValidators: true, context: "query" });
 };
 
 export const deleteTask = async (taskId) => {
