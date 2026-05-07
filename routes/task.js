@@ -1,11 +1,12 @@
 import express from "express";
 import { createTask, getTasksByProject, updateTaskStatus, updateTask, deleteTask } from "../services/task.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.post("/", async (req, res) => {
     try {
-        const { title, priority, status, project } = req.body;
+        const { title, priority, status } = req.body;
+        const project = req.params.projectId; // get projectId from url param
         const task = await createTask(title, priority, status, project);
         res.status(201).json(task);
     } catch (err) {
@@ -13,7 +14,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.get("/project/:projectId", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const tasks = await getTasksByProject(req.params.projectId);
         res.json(tasks);
@@ -35,7 +36,8 @@ router.patch("/:id/status", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
-        const { title, priority, status, project } = req.body;
+        const { title, priority, status } = req.body;
+        const project = req.params.projectId;
         const task = await updateTask(req.params.id, title, priority, status, project);
         if (!task) return res.status(404).json({ error: "Task not found" });
         res.json(task);

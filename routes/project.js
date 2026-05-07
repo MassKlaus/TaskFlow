@@ -1,7 +1,10 @@
 import express from "express";
 import { createProject, updateProject, getProjectsByOwner, getProjectById, deleteProject } from "../services/project.js";
+import taskRoutes from "./task.js";
 
 const router = express.Router();
+
+router.use("/:projectId/tasks", taskRoutes);
 
 // GET all projects for the authenticated user
 router.get("/", async (req, res) => {
