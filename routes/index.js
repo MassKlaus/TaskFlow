@@ -2,6 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { checkUserPasswordByEmail, createUser, getUserByEmail } from "../services/user.js";
 import projectRoutes from "./project.js";
+import { getTasksByUser } from "../services/task.js";
 
 const router = express.Router();
 
@@ -90,6 +91,18 @@ router.get("/auth/me", async (req, res) => {
     } catch (err) {
         console.error("Profile retrieval error:", err);
         return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+// this is a bit messy but i will leave this in here for now. we can restructure this later to be cleaner
+router.get("/my-tasks", async (req, res) => {
+    try {
+        const tasks = await getTasksByUser(req.user.userId);
+        res.json(tasks);
+    } catch (err) {
+        console.error("Error fetching user tasks:", err);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 

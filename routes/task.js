@@ -5,9 +5,9 @@ const router = express.Router({ mergeParams: true });
 
 router.post("/", async (req, res) => {
     try {
-        const { title, priority, status } = req.body;
+        const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId; // get projectId from url param
-        const task = await createTask(title, priority, status, project);
+        const task = await createTask(title, priority, status, project, assignee);
         res.status(201).json(task);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -36,15 +36,16 @@ router.patch("/:id/status", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
-        const { title, priority, status } = req.body;
+        const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId;
-        const task = await updateTask(req.params.id, title, priority, status, project);
+        const task = await updateTask(req.params.id, title, priority, status, project, assignee);
         if (!task) return res.status(404).json({ error: "Task not found" });
         res.json(task);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 });
+
 
 router.delete("/:id", async (req, res) => {
     try {
