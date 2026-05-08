@@ -20,6 +20,11 @@ const verifyProjectOwnership = async (req, res, next) => {
         next();
     } catch (err) {
         console.error("Error verifying project ownership:", err);
+
+        if (err && err.name === "CastError" && (err.path === "_id" || err.path === "projectId")) {
+            return res.status(400).json({ error: "Invalid project ID" });
+        }
+
         return res.status(500).json({ error: "Internal server error" });
     }
 };
