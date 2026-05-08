@@ -74,7 +74,6 @@ router.use((req, res, next) => {
             return res.status(401).json({ error: "Invalid token" });
         }
         // attach user info to request object
-        console.log("JWT decoded:", decoded);
         req.user = decoded;
         return next();
     });
