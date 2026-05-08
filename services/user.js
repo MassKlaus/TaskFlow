@@ -3,7 +3,7 @@ import user from "../db/user.js";
 
 /**
  * 
- * @param {string} email s
+ * @param {string} email
  * @param {string} password 
  * @param {string} fullName 
  * @returns {object} user object if all goes well | throws error if email exists
