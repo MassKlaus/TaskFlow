@@ -1,6 +1,8 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { checkUserPasswordByEmail, createUser, getUserByEmail } from "../services/user.js";
+import projectRoutes from "./project.js";
+import { getTasksByUser } from "../services/task.js";
 
 const router = express.Router();
 
@@ -72,14 +74,12 @@ router.use((req, res, next) => {
             return res.status(401).json({ error: "Invalid token" });
         }
         // attach user info to request object
-        console.log("JWT decoded:", decoded);
         req.user = decoded;
         return next();
     });
 });
 
 // Authenticated routes
-
 router.get("/auth/me", async (req, res) => {
     try {
         const user = await getUserByEmail(req.user.email);
@@ -92,5 +92,19 @@ router.get("/auth/me", async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 });
+
+
+// this is a bit messy but i will leave this in here for now. we can restructure this later to be cleaner
+router.get("/my-tasks", async (req, res) => {
+    try {
+        const tasks = await getTasksByUser(req.user.userId);
+        res.json(tasks);
+    } catch (err) {
+        console.error("Error fetching user tasks:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+router.use("/projects", projectRoutes);
 
 export default router;

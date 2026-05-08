@@ -1,7 +1,35 @@
 import express from "express";
 import { createProject, updateProject, getProjectsByOwner, getProjectById, deleteProject } from "../services/project.js";
+import taskRoutes from "./task.js";
 
 const router = express.Router();
+
+// Middleware to verify project ownership before allowing access to related tasks
+const verifyProjectOwnership = async (req, res, next) => {
+    try {
+        const project = await getProjectById(req.params.projectId);
+        
+        if (!project) {
+            return res.status(404).json({ error: "Project not found" });
+        }
+        
+        if (project.owner.toString() !== req.user.userId) {
+            return res.status(403).json({ error: "Forbidden: You do not own this project" });
+        }
+        
+        next();
+    } catch (err) {
+        console.error("Error verifying project ownership:", err);
+
+        if (err && err.name === "CastError" && (err.path === "_id" || err.path === "projectId")) {
+            return res.status(400).json({ error: "Invalid project ID" });
+        }
+
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+router.use("/:projectId/tasks", verifyProjectOwnership, taskRoutes);
 
 // GET all projects for the authenticated user
 router.get("/", async (req, res) => {
