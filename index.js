@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import routes from "./routes/index.js";
 
+import dashboardRoutes from "./routes/dashboardRoutes.js"
+
 dotenv.config();
 
 await mongoose.connect(process.env.MONGO_URI);
@@ -18,6 +20,8 @@ server.get("/api/health", (req, res) => {
 
 server.use(express.static("frontend"));
 server.use("/api", routes);
+
+server.use("/api/dashboard", dashboardRoutes);
 
 server.listen(port, () => {
   console.log(`TaskFlow API listening on port ${port}`);
