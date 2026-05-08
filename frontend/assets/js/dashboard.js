@@ -1,14 +1,8 @@
-const token = localStorage.getItem("token");
 const $id = (id) => document.getElementById(id);
 const API_URL = "http://localhost:3000/api/dashboard";
 
 async function fetchDashboard() {
-  const response = await axios.get(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+  const response = await axios.get(API_URL);
   return response.data;
 }
 
@@ -20,6 +14,11 @@ function updateStats(data) {
 }
 
 function renderTasks(tasks) {
+  if (!tasks || tasks.length === 0) {
+    tasksDiv.innerHTML = "<p>No tasks found</p>";
+    return;
+  }
+  
   const tasksDiv = $id("tasks");
   tasksDiv.innerHTML = "";
 
@@ -40,6 +39,7 @@ function renderTasks(tasks) {
 
 async function loadDashboard() {
   try {
+    $id("projects").innerText = "Loading...";
     const data = await fetchDashboard();
     updateStats(data);
     renderTasks(data.currentTasks);
