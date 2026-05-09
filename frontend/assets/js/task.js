@@ -10,8 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const getKey = () => {
-    if (!projectId) return null;
-    return `task-draft-${projectId}`;
+    try {
+      if (!projectId || projectId.trim() === "") {
+        throw new Error("Project ID is missing");
+      }
+
+      return `task-draft-${projectId}`;
+    } catch (error) {
+      console.error(error.message);
+      return null;
+    }
   };
 
   // AUTO SAVE
@@ -63,6 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const key = getKey();
+
+    if (!key) {
+      alert("Enter project ID first");
+      return;
+    }
+
     const payload = {
       title: form.title.value,
       priority: form.priority.value,
@@ -75,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       await axios.post(`/api/projects/${projectId}/tasks`, payload);
-      localStorage.removeItem(getKey());
+      localStorage.removeItem(key);
 
       form.reset();
       alert("Task created");
