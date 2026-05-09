@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User from "../db/user.js";
 
 export const protect = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -10,7 +10,8 @@ export const protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
+    // fix: changed decoded.userId in auth middleware instead of decoded.id
+    const user = await User.findById(decoded.userId).select("-passwordHash");
 
     if (!user) {
       return res
@@ -18,7 +19,11 @@ export const protect = async (req, res, next) => {
         .json({ message: "Not authorized, user not found" });
     }
 
-    req.user = user;
+    // fix: resolve userId mismatch in auth middleware causing project ownership and lookup issues
+    req.user = {
+      userId: user._id.toString(),
+      email: user.email
+    };
     next();
   } catch (error) {
     console.error("Token verification error:", error);

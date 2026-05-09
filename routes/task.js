@@ -1,9 +1,14 @@
 import express from "express";
-import { createTask, getTasksByProject, updateTaskStatus, updateTask, deleteTask } from "../services/task.js";
+import {
+  createTask, getTasksByProject, updateTaskStatus, updateTask, deleteTask,
+  getFilteredTasks
+} from "../services/task.js";
+
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", async (req, res) => {
+router.post("/", protect, async (req, res) => {
     try {
         const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId; // get projectId from url param
@@ -12,13 +17,13 @@ router.post("/", async (req, res) => {
     } catch (err) {
         if (err.name === "ValidationError" || err.name === "CastError") {
             return res.status(400).json({ error: err.message });
-        }
+        }  
         console.error("Error creating task:", err);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", protect,async (req, res) => {
     try {
         const tasks = await getTasksByProject(req.params.projectId);
         res.json(tasks);
@@ -31,7 +36,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.patch("/:id/status", async (req, res) => {
+router.patch("/:id/status", protect, async (req, res) => {
     try {
         const { status } = req.body;
         
@@ -52,7 +57,7 @@ router.patch("/:id/status", async (req, res) => {
     }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", protect, async (req, res) => {
     try {
         const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId;
@@ -69,7 +74,10 @@ router.patch("/:id", async (req, res) => {
 });
 
 
-router.delete("/:id", async (req, res) => {
+// functionality  6 ---
+router.get("/filter", protect, getFilteredTasks);
+// ---
+router.delete("/:id", protect, async (req, res) => {
     try {
         const project = req.params.projectId;
         const task = await deleteTask(req.params.id, project);

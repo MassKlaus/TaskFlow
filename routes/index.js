@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { checkUserPasswordByEmail, createUser, getUserByEmail } from "../services/user.js";
-import projectRoutes from "./project.js";
+// import projectRoutes from "./project.js";
 import { getTasksByUser } from "../services/task.js";
 
 const router = express.Router();
@@ -28,7 +28,7 @@ router.post("/auth/login", async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        return res.json({ token, user: { email: user.email, fullName: user.fullName } });
+        return res.json({ token, user: { user: user._id, email: user.email, fullName: user.fullName } });
     } catch (err) {
         console.error("Login error:", err);
         return res.status(500).json({ error: "Internal server error" });
@@ -105,6 +105,6 @@ router.get("/my-tasks", async (req, res) => {
     }
 });
 
-router.use("/projects", projectRoutes);
+// router.use("/projects", projectRoutes);
 
 export default router;

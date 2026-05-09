@@ -31,3 +31,51 @@ export const updateTask = async (taskId, title, priority, status, project, assig
 export const deleteTask = async (taskId, projectId) => {
     return Task.findOneAndDelete({ _id: taskId, project: projectId });
 };
+
+// Task 6 ---
+export const getFilteredTasks = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      priority,
+      assignee,
+      search,
+    } = req.query;
+
+    let filter = { project: projectId };
+
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (assignee) filter.assignee = assignee;
+
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const pageNum = Number(page);
+    const limitNum = Number(limit)
+    const skip = (pageNum - 1) * limitNum;
+
+    const data = await Task.find(filter)
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Task.countDocuments(filter);
+
+    res.json({
+      data,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
