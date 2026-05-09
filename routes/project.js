@@ -1,6 +1,7 @@
 import express from "express";
 import { createProject, updateProject, getProjectsByOwner, getProjectById, deleteProject } from "../services/project.js";
 import taskRoutes from "./task.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ const verifyProjectOwnership = async (req, res, next) => {
     }
 };
 
+router.use(protect)
 router.use("/:projectId/tasks", verifyProjectOwnership, taskRoutes);
 
 // GET all projects for the authenticated user
@@ -51,6 +53,7 @@ router.get("/", async (req, res) => {
 });
 
 // POST to create a new project
+// added protect middleware && grouped all project related routes endpoints for better readabilty
 router.post("/", async (req, res) => {
     const { title, description, deadline } = req.body;
 
@@ -115,7 +118,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE a specific project by ID
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",  async (req, res) => {
     try {
         const project = await getProjectById(req.params.id);
         
@@ -136,3 +139,5 @@ router.delete("/:id", async (req, res) => {
 });
 
 export default router;
+
+// added protect middleware

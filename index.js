@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import routes from "./routes/index.js";
 
-import dashboardRoutes from "./routes/dashboardRoutes.js"
+import dashboardRoutes from "./routes/dashboard.js"
+import projectRoutes from "./routes/project.js"
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ server.use(express.static("frontend"));
 server.use("/api", routes);
 
 server.use("/api/dashboard", dashboardRoutes);
+server.use("/api/projects", projectRoutes)
 
 server.listen(port, () => {
   console.log(`TaskFlow API listening on port ${port}`);

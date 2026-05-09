@@ -1,5 +1,8 @@
 import express from "express";
-import { createTask, getTasksByProject, updateTaskStatus, updateTask, deleteTask } from "../services/task.js";
+import {
+  createTask, getTasksByProject, updateTaskStatus, updateTask, deleteTask,
+  getFilteredTasks
+} from "../services/task.js";
 
 const router = express.Router({ mergeParams: true });
 
@@ -12,7 +15,7 @@ router.post("/", async (req, res) => {
     } catch (err) {
         if (err.name === "ValidationError" || err.name === "CastError") {
             return res.status(400).json({ error: err.message });
-        }
+        }  
         console.error("Error creating task:", err);
         res.status(500).json({ error: "Internal server error" });
     }
@@ -69,6 +72,9 @@ router.patch("/:id", async (req, res) => {
 });
 
 
+// functionality  6 ---
+router.get("/filter", getFilteredTasks);
+// ---
 router.delete("/:id", async (req, res) => {
     try {
         const project = req.params.projectId;

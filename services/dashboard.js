@@ -1,13 +1,13 @@
 // Needs Project/Task models from task 2&3
-import Project from "../models/Project"
-import Task from "../models/Task"
+import Project from "../db/project.js"
+import Task from "../db/task.js"
 
 export const getDashboard = async (req, res) => {
   try {
     // ACTIVE PROJECTS
     const activeProjects = await Project.countDocuments({
-      owner: req.user.id,
-      status: "actif",
+      owner: req.user.userId || req.user._id,
+      status: "active",
     });
 
     // TASK STATS USING AGGREGATION
@@ -33,7 +33,7 @@ export const getDashboard = async (req, res) => {
     stats.forEach((item) => {
       assignedTasks += item.total;
 
-      if (item._id === "terminé") {
+      if (item._id === "done") {
         completedTasks = item.total;
       }
     });
@@ -45,14 +45,14 @@ export const getDashboard = async (req, res) => {
         $lt: new Date(),
       },
       status: {
-        $ne: "terminé",
+        $ne: "done",
       },
     });
 
     // CURRENT TASKS
     const currentTasks = await Task.find({
       assignedTo: req.user.id,
-      status: "en cours",
+      status: "in progress",
     })
       .populate("project", "title")
       .sort({
