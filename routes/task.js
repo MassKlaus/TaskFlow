@@ -4,11 +4,9 @@ import {
   getFilteredTasks
 } from "../services/task.js";
 
-import { protect } from "../middleware/authMiddleware.js";
-
 const router = express.Router({ mergeParams: true });
 
-router.post("/", protect, async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId; // get projectId from url param
@@ -23,7 +21,7 @@ router.post("/", protect, async (req, res) => {
     }
 });
 
-router.get("/", protect,async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const tasks = await getTasksByProject(req.params.projectId);
         res.json(tasks);
@@ -36,7 +34,7 @@ router.get("/", protect,async (req, res) => {
     }
 });
 
-router.patch("/:id/status", protect, async (req, res) => {
+router.patch("/:id/status", async (req, res) => {
     try {
         const { status } = req.body;
         
@@ -57,7 +55,7 @@ router.patch("/:id/status", protect, async (req, res) => {
     }
 });
 
-router.patch("/:id", protect, async (req, res) => {
+router.patch("/:id", async (req, res) => {
     try {
         const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId;
@@ -75,9 +73,9 @@ router.patch("/:id", protect, async (req, res) => {
 
 
 // functionality  6 ---
-router.get("/filter", protect, getFilteredTasks);
+router.get("/filter", getFilteredTasks);
 // ---
-router.delete("/:id", protect, async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const project = req.params.projectId;
         const task = await deleteTask(req.params.id, project);

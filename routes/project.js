@@ -30,10 +30,11 @@ const verifyProjectOwnership = async (req, res, next) => {
     }
 };
 
-router.use("/:projectId/tasks", protect, verifyProjectOwnership, taskRoutes);
+router.use(protect)
+router.use("/:projectId/tasks", verifyProjectOwnership, taskRoutes);
 
 // GET all projects for the authenticated user
-router.get("/", protect, async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -53,7 +54,7 @@ router.get("/", protect, async (req, res) => {
 
 // POST to create a new project
 // added protect middleware && grouped all project related routes endpoints for better readabilty
-router.post("/", protect, async (req, res) => {
+router.post("/", async (req, res) => {
     const { title, description, deadline } = req.body;
 
     if (!title) {
@@ -70,7 +71,7 @@ router.post("/", protect, async (req, res) => {
 });
 
 // GET a specific project by ID
-router.get("/:id", protect, async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const project = await getProjectById(req.params.id);
         
@@ -91,7 +92,7 @@ router.get("/:id", protect, async (req, res) => {
 });
 
 // PUT to update a specific project by ID
-router.put("/:id", protect, async (req, res) => {
+router.put("/:id", async (req, res) => {
     const { title, description, deadline, status } = req.body;
     
     try {
@@ -117,7 +118,7 @@ router.put("/:id", protect, async (req, res) => {
 });
 
 // DELETE a specific project by ID
-router.delete("/:id",  protect, async (req, res) => {
+router.delete("/:id",  async (req, res) => {
     try {
         const project = await getProjectById(req.params.id);
         
