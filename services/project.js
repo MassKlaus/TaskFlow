@@ -34,6 +34,22 @@ export async function getProjectById(projectId) {
     return await projectSchema.findById(projectId);
 }
 
+export async function addMember(projectId, userId) {
+    return await projectSchema.findByIdAndUpdate(
+        projectId,
+        { $addToSet: { members: userId }, updatedAt: Date.now() },
+        { new: true }
+    );
+}
+
+export async function removeMember(projectId, userId) {
+    return await projectSchema.findByIdAndUpdate(
+        projectId,
+        { $pull: { members: userId }, updatedAt: Date.now() },
+        { new: true }
+    );
+}
+
 export async function deleteProject(projectId) {
     return await projectSchema.findByIdAndDelete(projectId);
     // later i should add a check to ensure only the owner can delete the project

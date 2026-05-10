@@ -1,37 +1,15 @@
 import express from "express";
-import { createProject, updateProject, getProjectsByOwner, getProjectById, deleteProject } from "../services/project.js";
+import { createProject, updateProject, getProjectsByOwner, getProjectById, deleteProject, addMember, removeMember } from "../services/project.js";
 import taskRoutes from "./task.js";
+import memberRoutes from "./members.js";
 import { protect } from "../middleware/authMiddleware.js";
+import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 
 const router = express.Router();
 
-// Middleware to verify project ownership before allowing access to related tasks
-const verifyProjectOwnership = async (req, res, next) => {
-    try {
-        const project = await getProjectById(req.params.projectId);
-        
-        if (!project) {
-            return res.status(404).json({ error: "Project not found" });
-        }
-        
-        if (project.owner.toString() !== req.user.userId) {
-            return res.status(403).json({ error: "Forbidden: You do not own this project" });
-        }
-        
-        next();
-    } catch (err) {
-        console.error("Error verifying project ownership:", err);
-
-        if (err && err.name === "CastError" && (err.path === "_id" || err.path === "projectId")) {
-            return res.status(400).json({ error: "Invalid project ID" });
-        }
-
-        return res.status(500).json({ error: "Internal server error" });
-    }
-};
-
 router.use(protect)
-router.use("/:projectId/tasks", verifyProjectOwnership, taskRoutes);
+router.use("/:projectId/members", verifyProjectOwnership, memberRoutes);
+router.use("/:projectId/tasks", taskRoutes);
 
 // GET all projects for the authenticated user
 router.get("/", async (req, res) => {
@@ -55,14 +33,14 @@ router.get("/", async (req, res) => {
 // POST to create a new project
 // added protect middleware && grouped all project related routes endpoints for better readabilty
 router.post("/", async (req, res) => {
-    const { title, description, deadline } = req.body;
+    const { title, description, deadline, members } = req.body;
 
     if (!title) {
         return res.status(400).json({ error: "Title is required" });
     }
 
     try {
-        const project = await createProject(title, description, req.user.userId, deadline);
+        const project = await createProject(title, description, req.user.userId, deadline, members || []);
         res.status(201).json(project);
     } catch (err) {
         console.error("Error creating project:", err);
@@ -93,7 +71,7 @@ router.get("/:id", async (req, res) => {
 
 // PUT to update a specific project by ID
 router.put("/:id", async (req, res) => {
-    const { title, description, deadline, status } = req.body;
+    const { title, description, deadline, status, members } = req.body;
     
     try {
         const project = await getProjectById(req.params.id);
@@ -106,7 +84,7 @@ router.put("/:id", async (req, res) => {
             return res.status(403).json({ error: "Forbidden: You do not own this project" });
         }
         
-        const updatedProject = await updateProject(req.params.id, title, description, deadline, status);
+        const updatedProject = await updateProject(req.params.id, title, description, deadline, status, members);
         res.json(updatedProject);
     } catch (err) {
         if (err.message === "Project not found") {
