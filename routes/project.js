@@ -8,7 +8,7 @@ import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 const router = express.Router();
 
 router.use(protect)
-router.use("/:projectId/members", verifyProjectOwnership, memberRoutes);
+router.use("/:projectId/members", memberRoutes);
 router.use("/:projectId/tasks", taskRoutes);
 
 // GET all projects for the authenticated user
