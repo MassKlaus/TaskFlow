@@ -5,6 +5,7 @@ import {
 } from "../services/task.js";
 import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 import { verifyProjectMember } from "../middleware/memberMiddleware.js";
+import { verifyTaskAssignee } from "../middleware/assigneeMiddleware.js";
 
 const router = express.Router({ mergeParams: true });
 // member and owner
@@ -25,8 +26,7 @@ router.get("/", async (req, res) => {
 
 router.get("/filter", getFilteredTasks);
 
-// only owner or members may access this
-router.patch("/:id/status", async (req, res) => {
+router.patch("/:id/status", verifyTaskAssignee, async (req, res) => {
     try {
         const { status } = req.body;
         
