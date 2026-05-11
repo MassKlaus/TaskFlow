@@ -40,8 +40,10 @@ projectSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function(next
 
 projectSchema.pre('deleteOne', async function(next) {
     try {
-        const Task = mongoose.model('Task');
-        await Task.deleteMany({ project: this._id });
+        const Task = mongoose.models.Task;
+        if (Task) {
+            await Task.deleteMany({ project: this._id });
+        }
         next();
     } catch (error) {
         next(error);
