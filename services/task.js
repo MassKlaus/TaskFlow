@@ -1,7 +1,7 @@
 import Task from "../db/task.js";
 
-export const createTask = async (title, priority, status, project, assignee) => {
-    const task = new Task({ title, priority, status, project, assignee });
+export const createTask = async (title, priority, status, project, assignee, deadline) => {
+    const task = new Task({ title, priority, status, project, assignee, deadline });
     await task.save();
     return task.populate("assignee", "fullName email");
 };
@@ -22,8 +22,8 @@ export const updateTaskStatus = async (taskId, projectId, status) => {
     ).populate("assignee", "fullName email");
 };
 
-export const updateTask = async (taskId, title, priority, status, project, assignee) => {
-    const data = { title, priority, status, project, assignee, updatedAt: Date.now() };
+export const updateTask = async (taskId, title, priority, status, project, assignee, deadline) => {
+    const data = { title, priority, status, project, assignee, deadline, updatedAt: Date.now() };
     Object.keys(data).forEach(key => data[key] === undefined && delete data[key]);
     return Task.findOneAndUpdate({ _id: taskId, project: project }, data, { new: true, runValidators: true, context: "query" }).populate("assignee", "fullName email");
 };

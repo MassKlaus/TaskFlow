@@ -8,9 +8,9 @@ const router = express.Router({ mergeParams: true });
 
 router.post("/", async (req, res) => {
     try {
-        const { title, priority, status, assignee } = req.body;
+        const { title, priority, status, assignee, deadline } = req.body;
         const project = req.params.projectId; // get projectId from url param
-        const task = await createTask(title, priority, status, project, assignee);
+        const task = await createTask(title, priority, status, project, assignee, deadline);
         res.status(201).json(task);
     } catch (err) {
         if (err.name === "ValidationError" || err.name === "CastError") {
@@ -57,9 +57,9 @@ router.patch("/:id/status", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
     try {
-        const { title, priority, status, assignee } = req.body;
+        const { title, priority, status, assignee, deadline } = req.body;
         const project = req.params.projectId;
-        const task = await updateTask(req.params.id, title, priority, status, project, assignee);
+        const task = await updateTask(req.params.id, title, priority, status, project, assignee, deadline);
         if (!task) return res.status(404).json({ error: "Task not found in this project" });
         res.json(task);
     } catch (err) {
