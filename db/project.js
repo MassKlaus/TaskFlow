@@ -16,7 +16,25 @@ projectSchema.pre('save', function(next) {
 });
 
 projectSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function(next) {
-    this.set({ updatedAt: Date.now() });
+    const now = Date.now();
+    const update = this.getUpdate() || {};
+    const hasOperators = Object.keys(update).some((key) => key.startsWith('$'));
+
+    if (hasOperators) {
+        this.setUpdate({
+            ...update,
+            $set: {
+                ...(update.$set || {}),
+                updatedAt: now,
+            },
+        });
+    } else {
+        this.setUpdate({
+            ...update,
+            updatedAt: now,
+        });
+    }
+
     next();
 });
 
