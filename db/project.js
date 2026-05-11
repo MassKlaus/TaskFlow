@@ -10,4 +10,24 @@ const projectSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
+projectSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
+projectSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function(next) {
+    this.set({ updatedAt: Date.now() });
+    next();
+});
+
+projectSchema.pre('deleteOne', async function(next) {
+    try {
+        const Task = mongoose.model('Task');
+        await Task.deleteMany({ project: this._id });
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default mongoose.model("Project", projectSchema);
