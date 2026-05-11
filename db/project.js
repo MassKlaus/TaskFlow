@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Task from "./task.js";
 
 const projectSchema = new mongoose.Schema({
     title: { type: String, required: true },
@@ -38,15 +39,9 @@ projectSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function(next
     next();
 });
 
-projectSchema.pre('deleteOne', async function(next) {
-    try {
-        const Task = mongoose.models.Task;
-        if (Task) {
-            await Task.deleteMany({ project: this._id });
-        }
-        next();
-    } catch (error) {
-        next(error);
+projectSchema.post('findOneAndDelete', async function(doc) {
+    if (doc) {
+        await Task.deleteMany({ project: doc._id });
     }
 });
 
