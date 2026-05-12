@@ -70,9 +70,9 @@ router.post("/", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
     try {
-        const { title, priority, status, assignee } = req.body;
+        const { title, priority, status, assignee, deadline } = req.body;
         const project = req.params.projectId;
-        const task = await updateTask(req.params.id, title, priority, status, project, assignee);
+        const task = await updateTask(req.params.id, title, priority, status, project, assignee, deadline);
         if (!task) return res.status(404).json({ error: "Task not found in this project" });
         res.json(task);
     } catch (err) {
