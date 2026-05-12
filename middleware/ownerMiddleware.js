@@ -1,3 +1,5 @@
+import { getProjectById } from "../services/project.js";
+
 // Middleware to verify project ownership before allowing access to related tasks
 export const verifyProjectOwnership = async (req, res, next) => {
     try {
@@ -10,7 +12,7 @@ export const verifyProjectOwnership = async (req, res, next) => {
         if (project.owner.toString() !== req.user.userId) {
             return res.status(403).json({ error: "Forbidden: You do not own this project" });
         }
-        
+
         next();
     } catch (err) {
         console.error("Error verifying project ownership:", err);
