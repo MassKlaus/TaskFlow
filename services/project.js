@@ -2,11 +2,11 @@ import projectSchema from "../db/project.js";
 
 
 export async function createProject(title, description, ownerId, deadline) {
-    const newProject = new projectSchema({ title, description, owner: ownerId, deadline });
+    const newProject = new projectSchema({ title, description, owner: ownerId, deadline, members: [] });
     return await newProject.save();
 }
 
-export async function updateProject(projectId, title, description, deadline, status) {
+export async function updateProject(projectId, title, description, deadline, status, members) {
     const existingProject = await projectSchema.findById(projectId);
 
     if (!existingProject) {
@@ -17,6 +17,7 @@ export async function updateProject(projectId, title, description, deadline, sta
     existingProject.description = description || existingProject.description;
     existingProject.deadline = deadline || existingProject.deadline;
     existingProject.status = status || existingProject.status;
+    if (members) existingProject.members = members;
     existingProject.updatedAt = Date.now();
 
 

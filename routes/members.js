@@ -1,8 +1,7 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware.js";
 import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 import { getUserByEmail } from "../services/user.js";
-import { addMember, removeMember } from "../services/project.js";
+import { addMember, getProjectById, removeMember } from "../services/project.js";
 
 const router = express.Router();
 

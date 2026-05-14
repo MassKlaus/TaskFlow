@@ -1,7 +1,7 @@
 import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
-import { getDashboard } from "../services/dashboard.js";
-
+import { checkUserPasswordByEmail, createUser, getUserByEmail } from "../services/user.js";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 
 // Authentication free routes

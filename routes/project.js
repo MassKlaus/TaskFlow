@@ -33,14 +33,14 @@ router.get("/", async (req, res) => {
 // POST to create a new project
 // added protect middleware && grouped all project related routes endpoints for better readabilty
 router.post("/", async (req, res) => {
-    const { title, description, deadline, members } = req.body;
+    const { title, description, deadline } = req.body;
 
     if (!title) {
         return res.status(400).json({ error: "Title is required" });
     }
 
     try {
-        const project = await createProject(title, description, req.user.userId, deadline, members || []);
+        const project = await createProject(title, description, req.user.userId, deadline);
         res.status(201).json(project);
     } catch (err) {
         console.error("Error creating project:", err);
