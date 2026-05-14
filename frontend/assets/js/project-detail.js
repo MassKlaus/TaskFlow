@@ -115,5 +115,42 @@ async function deleteTask(taskId) {
     }
 }
 
+function describeActivity(a) {
+    const name = a.user?.fullName || a.user?.email || "Someone";
+    const d = a.details || {};
+    const time = new Date(a.createdAt).toLocaleString();
+    switch (a.action) {
+        case "task_created":
+            return `${name} created task "${d.taskTitle}" — ${time}`;
+        case "task_deleted":
+            return `${name} deleted task "${d.taskTitle}" — ${time}`;
+        case "task_status_changed":
+            return `${name} changed status of "${d.taskTitle}" to "${d.newStatus}" — ${time}`;
+        case "member_added":
+            return `${name} added member ${d.memberEmail || d.memberId} — ${time}`;
+        case "member_removed":
+            return `${name} removed a member — ${time}`;
+        case "project_updated":
+            return `${name} updated the project — ${time}`;
+        default:
+            return `${name} performed ${a.action} — ${time}`;
+    }
+}
+
+async function loadActivities() {
+    const container = document.getElementById("activity-list");
+    try {
+        const { data } = await axios.get(`/api/projects/${projectId}/activities`);
+        container.innerHTML = data.map(a => `
+            <div style="border-bottom:1px solid #ddd; padding:6px 0;">
+                ${describeActivity(a)}
+            </div>
+        `).join("");
+    } catch (err) {
+        container.innerHTML = "<p>Could not load activity feed</p>";
+    }
+}
+
 loadProject();
 loadTasks();
+loadActivities();
