@@ -1,40 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Task</title>
-    <script src="vendor/axios.min.js" defer></script>
-    <script src="assets/js/common.js" defer></script>
-    <script src="assets/js/task.js"></script>
-  </head>
-  <body>
-    <h1>Create Task</h1>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport"
+		      content="width=device-width, initial-scale=1.0"
+		>
+		<title>Create Task</title>
+		<script src="vendor/axios.min.js" defer></script>
+		<script src="assets/js/common.js" defer></script>
+		<script src="assets/js/task.js"></script>
+	</head>
+	<body>
+		<h1>Create Task</h1>
 
-    <form id="taskForm">
-      <input type="text" name="project" placeholder="Project ID" required />
+		<form id="taskForm">
+			<select name="project" required>
+				<option value="">-- Select Project --</option>
+			</select>
 
-      <input type="text" name="title" placeholder="Task title" required />
+			<input type="text" name="title" placeholder="Task title" required>
 
-      <select name="priority" required>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
+			<select name="priority" required>
+				<option value="low">Low</option>
+				<option value="medium">Medium</option>
+				<option value="high">High</option>
+			</select>
 
-      <select name="status" required>
-        <option value="to do">To Do</option>
-        <option value="in progress">In Progress</option>
-        <option value="done">Done</option>
-      </select>
+			<select name="status" required>
+				<option value="to do">To Do</option>
+				<option value="in progress">In Progress</option>
+				<option value="done">Done</option>
+			</select>
 
-      <input type="text" name="assignee" placeholder="Assignee User ID" />
+			<select name="assignee">
+				<option value="">-- Unassigned --</option>
+			</select>
 
-      <button type="submit">Create Task</button>
-    </form>
+			<button type="submit">Create Task</button>
+		</form>
 
-    <script>
-
-    </script>
-  </body>
+		<script>
+		</script>
+	</body>
 </html>
