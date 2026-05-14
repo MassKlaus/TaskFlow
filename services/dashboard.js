@@ -14,7 +14,7 @@ export const getDashboard = async (req, res) => {
     const stats = await Task.aggregate([
       {
         $match: {
-          assignedTo: req.user._id,
+          assignee: req.user.userId,
         },
       },
       {
@@ -40,7 +40,7 @@ export const getDashboard = async (req, res) => {
 
     // OVERDUE TASKS
     const overdueTasks = await Task.countDocuments({
-      assignedTo: req.user.id,
+      assignee: req.user.userId,
       deadline: {
         $lt: new Date(),
       },
@@ -51,7 +51,7 @@ export const getDashboard = async (req, res) => {
 
     // CURRENT TASKS
     const currentTasks = await Task.find({
-      assignedTo: req.user.id,
+      assignee: req.user.userId,
       status: "in progress",
     })
       .populate("project", "title")

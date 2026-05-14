@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Project</title>
+    <script src="vendor/axios.min.js" defer></script>
+    <script src="assets/js/common.js" defer></script>
+    <script src="assets/js/project-detail.js" defer></script>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/projects.html">Projects</a>
+        <a href="#" id="logout-link">Logout</a>
+    </nav>
+
+    <h1 id="project-title"></h1>
+
+    <section id="project-info"></section>
+
+    <section id="members-section">
+        <h2>Members</h2>
+        <ul id="members-list"></ul>
+        <form id="add-member-form">
+            <label>Email: <input type="email" name="email" required></label>
+            <button type="submit">Add Member</button>
+        </form>
+    </section>
+
+    <section id="tasks-section">
+        <h2>Tasks</h2>
+
+        <form id="filter-form">
+            <label>Status:
+                <select name="status">
+                    <option value="">All</option>
+                    <option value="to do">To Do</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+            </label>
+            <label>Priority:
+                <select name="priority">
+                    <option value="">All</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </label>
+            <label>Assignee ID: <input type="text" name="assignee"></label>
+            <label>Search: <input type="text" name="search"></label>
+            <button type="submit">Filter</button>
+            <button type="reset">Reset</button>
+        </form>
+
+        <form id="create-task-form">
+            <h3>New Task</h3>
+            <label>Title: <input type="text" name="title" required></label>
+            <label>Priority:
+                <select name="priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </label>
+            <label>Status:
+                <select name="status">
+                    <option value="to do">To Do</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+            </label>
+            <label>Assignee ID: <input type="text" name="assignee"></label>
+            <button type="submit">Create</button>
+        </form>
+
+        <div id="task-list"></div>
+    </section>
+
+</body>
+</html>

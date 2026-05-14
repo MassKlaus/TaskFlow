@@ -3,23 +3,13 @@ import {
   createTask, getTasksByProject, updateTaskStatus, updateTask, deleteTask,
   getFilteredTasks
 } from "../services/task.js";
+import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
+import { verifyProjectMember } from "../middleware/memberMiddleware.js";
+import { verifyTaskAssignee } from "../middleware/assigneeMiddleware.js";
 
 const router = express.Router({ mergeParams: true });
-
-router.post("/", async (req, res) => {
-    try {
-        const { title, priority, status, assignee, deadline } = req.body;
-        const project = req.params.projectId; // get projectId from url param
-        const task = await createTask(title, priority, status, project, assignee, deadline);
-        res.status(201).json(task);
-    } catch (err) {
-        if (err.name === "ValidationError" || err.name === "CastError") {
-            return res.status(400).json({ error: err.message });
-        }  
-        console.error("Error creating task:", err);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+// member and owner
+router.use(verifyProjectMember)
 
 router.get("/", async (req, res) => {
     try {
@@ -34,7 +24,9 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.patch("/:id/status", async (req, res) => {
+router.get("/filter", getFilteredTasks);
+
+router.patch("/:id/status", verifyTaskAssignee, async (req, res) => {
     try {
         const { status } = req.body;
         
@@ -55,6 +47,27 @@ router.patch("/:id/status", async (req, res) => {
     }
 });
 
+// owner only
+router.use(verifyProjectOwnership)
+
+router.post("/", async (req, res) => {
+    try {
+        const { title, priority, status, assignee } = req.body;
+        const project = req.params.projectId; // get projectId from url param
+        const task = await createTask(title, priority, status, project, assignee);
+        res.status(201).json(task);
+    } catch (err) {
+        if (err.name === "ValidationError" || err.name === "CastError") {
+            return res.status(400).json({ error: err.message });
+        }  
+        console.error("Error creating task:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+
+
 router.patch("/:id", async (req, res) => {
     try {
         const { title, priority, status, assignee, deadline } = req.body;
@@ -73,7 +86,6 @@ router.patch("/:id", async (req, res) => {
 
 
 // functionality  6 ---
-router.get("/filter", getFilteredTasks);
 // ---
 router.delete("/:id", async (req, res) => {
     try {
