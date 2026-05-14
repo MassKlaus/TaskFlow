@@ -10,8 +10,8 @@ import projectRoutes from "./project.js"
 const router = express.Router();
 
 router.use("/auth", authRouter)
-server.use("/dashboard", dashboardRoutes);
-server.use("/projects", projectRoutes)
+router.use("/dashboard", dashboardRoutes);
+router.use("/projects", projectRoutes)
 
 // this is a bit messy but i will leave this in here for now. we can restructure this later to be cleaner
 router.get("/my-tasks", protect, async (req, res) => {
