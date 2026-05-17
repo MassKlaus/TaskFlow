@@ -2,6 +2,7 @@ import express from "express";
 import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 import { getUserByEmail } from "../services/user.js";
 import { addMember, getProjectById, removeMember } from "../services/project.js";
+import { logActivity } from "../services/activity.js";
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post("/", async (req, res) => {
             return res.status(404).json({ error: "Project not found" });
         }
 
+        await logActivity("member_added", req.params.projectId, req.user.userId, { memberId: user._id, memberEmail: email });
         res.json(updatedProject);
     } catch (err) {
         console.error("Error adding member:", err);
@@ -53,6 +55,7 @@ router.delete("/:userId", async (req, res) => {
             return res.status(404).json({ error: "Project not found" });
         }
 
+        await logActivity("member_removed", req.params.projectId, req.user.userId, { memberId: req.params.userId });
         res.json(updatedProject);
     } catch (err) {
         console.error("Error removing member:", err);

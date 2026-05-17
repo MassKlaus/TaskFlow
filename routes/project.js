@@ -2,14 +2,17 @@ import express from "express";
 import { createProject, updateProject, getProjectsByOwner, getProjectById, deleteProject, addMember, removeMember } from "../services/project.js";
 import taskRoutes from "./task.js";
 import memberRoutes from "./members.js";
+import activityRoutes from "./activity.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
+import { logActivity } from "../services/activity.js";
 
 const router = express.Router();
 
 router.use(protect)
 router.use("/:projectId/members", memberRoutes);
 router.use("/:projectId/tasks", taskRoutes);
+router.use("/:projectId/activities", activityRoutes);
 
 // GET all projects for the authenticated user
 router.get("/", async (req, res) => {
@@ -85,6 +88,7 @@ router.put("/:id", async (req, res) => {
         }
         
         const updatedProject = await updateProject(req.params.id, title, description, deadline, status, members);
+        await logActivity("project_updated", req.params.id, req.user.userId, { title, description, deadline, status });
         res.json(updatedProject);
     } catch (err) {
         if (err.message === "Project not found") {

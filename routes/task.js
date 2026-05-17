@@ -6,6 +6,7 @@ import {
 import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 import { verifyProjectMember } from "../middleware/memberMiddleware.js";
 import { verifyTaskAssignee } from "../middleware/assigneeMiddleware.js";
+import { logActivity } from "../services/activity.js";
 
 const router = express.Router({ mergeParams: true });
 // member and owner
@@ -37,6 +38,9 @@ router.patch("/:id/status", verifyTaskAssignee, async (req, res) => {
         const project = req.params.projectId;
         const task = await updateTaskStatus(req.params.id, project, status);
         if (!task) return res.status(404).json({ error: "Task not found in this project" });
+        await logActivity("task_status_changed", project, req.user.userId, {
+            taskId: task._id, taskTitle: task.title, oldStatus: task.status, newStatus: status
+        });
         res.json(task);
     } catch (err) {
         if (err.name === "ValidationError" || err.name === "CastError") {
@@ -55,6 +59,7 @@ router.post("/", async (req, res) => {
         const { title, priority, status, assignee } = req.body;
         const project = req.params.projectId; // get projectId from url param
         const task = await createTask(title, priority, status, project, assignee);
+        await logActivity("task_created", project, req.user.userId, { taskId: task._id, taskTitle: title });
         res.status(201).json(task);
     } catch (err) {
         if (err.name === "ValidationError" || err.name === "CastError") {
@@ -92,6 +97,7 @@ router.delete("/:id", async (req, res) => {
         const project = req.params.projectId;
         const task = await deleteTask(req.params.id, project);
         if (!task) return res.status(404).json({ error: "Task not found in this project" });
+        await logActivity("task_deleted", project, req.user.userId, { taskId: req.params.id, taskTitle: task.title });
         res.json({ message: "Task deleted" });
     } catch (err) {
         if (err.name === "CastError") {
