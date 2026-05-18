@@ -3,7 +3,7 @@ import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 import { getUserByEmail } from "../services/user.js";
 import { addMember, getProjectById, removeMember } from "../services/project.js";
 
-const router = express.Router();
+const router = express.Router({mergeParams: true});
 
 router.use(verifyProjectOwnership);
 
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
         const updatedProject = await addMember(req.params.projectId, user._id);
 
         if (!updatedProject) {
-            return res.status(404).json({ error: "Project not found" });
+            return res.status(404).json({ error: "Failed to add to project" });
         }
 
         res.json(updatedProject);
