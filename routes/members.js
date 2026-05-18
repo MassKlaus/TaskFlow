@@ -5,7 +5,7 @@ import { addMember, getProjectById, removeMember } from "../services/project.js"
 import { logActivity } from "../services/activity.js";
 import { createNotification } from "../services/notification.js";
 
-const router = express.Router();
+const router = express.Router({mergeParams: true});
 
 router.use(verifyProjectOwnership);
 
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
         const updatedProject = await addMember(req.params.projectId, user._id);
 
         if (!updatedProject) {
-            return res.status(404).json({ error: "Project not found" });
+            return res.status(404).json({ error: "Failed to add to project" });
         }
 
         await logActivity("member_added", req.params.projectId, req.user.userId, { memberId: user._id, memberEmail: email });
