@@ -6,11 +6,25 @@
 		      content="width=device-width, initial-scale=1.0"
 		>
 		<title>Create Task</title>
+		<link rel="stylesheet" href="assets/app.css">
 		<script src="vendor/axios.min.js" defer></script>
 		<script src="assets/js/common.js" defer></script>
+		<script src="assets/js/notifications.js" defer></script>
 		<script src="assets/js/task.js"></script>
 	</head>
 	<body>
+		<nav>
+			<div class="navigation">
+				<a href="/dashboard.html">Dashboard</a>
+				<a href="/projects.html">Projects</a>
+				<a href="/task.html">Create Task</a>
+				<div class="notification-wrapper">
+					<a href="#" id="notification-bell">&#128276;<span id="notification-badge" style="display:none">0</span></a>
+					<div id="notification-dropdown"></div>
+				</div>
+				<a href="#" id="logout-link">Logout</a>
+			</div>
+		</nav>
 		<h1>Create Task</h1>
 
 		<form id="taskForm">
