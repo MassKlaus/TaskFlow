@@ -4,39 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow - Projects</title>
+    <link rel="stylesheet" href="assets/global.css" />
     <script src="vendor/axios.min.js" defer></script>
     <script src="assets/js/common.js" defer></script>
     <script src="assets/js/projects.js" defer></script>
 </head>
 <body>
-    <nav>
-        <a href="/dashboard.html">Dashboard</a>
-        <a href="/projects.html">Projects</a>
-        <a href="/task.html">Create Task</a>
-        <a href="#" id="logout-link">Logout</a>
-    </nav>
+    <header>
+        <nav>
+            <div>
+                <h1><a href="/"><span class="primary-text">Task</span>Flow</a></h1>
+            </div>
+            <div id="authed-links">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/projects.html">Projects</a>
+                <a href="/task.html">Create Task</a>
+                <a href="#" id="logout-link">Logout</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <h1>Projects</h1>
 
-    <h1>Projects</h1>
+        <section id="create-project" class="card">
+            <h2>New Project</h2>
+            <form id="project-form">
+                <label>Title: <input type="text" name="title" required></label>
+                <label>Description: <textarea name="description"></textarea></label>
+                <label>Deadline: <input type="date" name="deadline"></label>
+                <button type="submit">Create</button>
+            </form>
+        </section>
 
-    <section id="create-project">
-        <h2>New Project</h2>
-        <form id="project-form">
-            <label>Title: <input type="text" name="title" required></label>
-            <label>Description: <textarea name="description"></textarea></label>
-            <label>Deadline: <input type="date" name="deadline"></label>
-            <button type="submit">Create</button>
-        </form>
-    </section>
-
-    <section id="project-list">
-        <h2>Your Projects</h2>
-        <div id="projects-container"></div>
-        <div id="pagination">
-            <button id="prev-page">&larr; Previous</button>
-            <span id="page-info">Page 1</span>
-            <button id="next-page">Next &rarr;</button>
-        </div>
-    </section>
-
+        <section id="project-list">
+            <h2>Your Projects</h2>
+            <div id="projects-container"></div>
+            <div id="pagination" class="pagination">
+                <button id="prev-page">&larr; Previous</button>
+                <span id="page-info">Page 1</span>
+                <button id="next-page">Next &rarr;</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>TaskFlow &copy; 2026</p>
+    </footer>
 </body>
 </html>

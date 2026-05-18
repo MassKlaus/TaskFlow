@@ -4,21 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
+    <link rel="stylesheet" href="assets/global.css" />
     <script defer src="vendor/axios.min.js"></script>
     <script defer src="assets/js/common.js"></script>
     <script defer src="assets/js/dashboard.js"></script>
   </head>
-
   <body>
-    <h1>Dashboard</h1>
-    <div id="stats">
-      <p id="projects"></p>
-      <p id="assigned"></p>
-      <p id="completed"></p>
-      <p id="overdue"></p>
-    </div>
-    <h2>Current Tasks</h2>
-    <div id="tasks"></div>
-
+    <header>
+      <nav>
+        <div>
+          <h1><a href="/"><span class="primary-text">Task</span>Flow</a></h1>
+        </div>
+        <div id="authed-links">
+          <a href="/dashboard.html">Dashboard</a>
+          <a href="/projects.html">Projects</a>
+          <a href="/task.html">Create Task</a>
+          <a href="#" id="logout-link">Logout</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <h1>Dashboard</h1>
+      <div id="stats" class="stats-grid">
+        <div class="stat-card"><p id="projects">-</p></div>
+        <div class="stat-card"><p id="assigned">-</p></div>
+        <div class="stat-card"><p id="completed">-</p></div>
+        <div class="stat-card"><p id="overdue">-</p></div>
+      </div>
+      <h2>Current Tasks</h2>
+      <div id="tasks"></div>
+    </main>
+    <footer>
+      <p>TaskFlow &copy; 2026</p>
+    </footer>
   </body>
 </html>

@@ -1,45 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport"
-		      content="width=device-width, initial-scale=1.0"
-		>
-		<title>Create Task</title>
-		<script src="vendor/axios.min.js" defer></script>
-		<script src="assets/js/common.js" defer></script>
-		<script src="assets/js/task.js"></script>
-	</head>
-	<body>
-		<h1>Create Task</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Create Task</title>
+        <link rel="stylesheet" href="assets/global.css" />
+        <script src="vendor/axios.min.js" defer></script>
+        <script src="assets/js/common.js" defer></script>
+        <script src="assets/js/task.js"></script>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div>
+                    <h1><a href="/"><span class="primary-text">Task</span>Flow</a></h1>
+                </div>
+                <div id="authed-links">
+                    <a href="/dashboard.html">Dashboard</a>
+                    <a href="/projects.html">Projects</a>
+                    <a href="/task.html">Create Task</a>
+                    <a href="#" id="logout-link">Logout</a>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <h1>Create Task</h1>
 
-		<form id="taskForm">
-			<select name="project" required>
-				<option value="">-- Select Project --</option>
-			</select>
+            <form id="taskForm" class="card">
+                <select name="project" required>
+                    <option value="">-- Select Project --</option>
+                </select>
 
-			<input type="text" name="title" placeholder="Task title" required>
+                <input type="text" name="title" placeholder="Task title" required>
 
-			<select name="priority" required>
-				<option value="low">Low</option>
-				<option value="medium">Medium</option>
-				<option value="high">High</option>
-			</select>
+                <select name="priority" required>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
 
-			<select name="status" required>
-				<option value="to do">To Do</option>
-				<option value="in progress">In Progress</option>
-				<option value="done">Done</option>
-			</select>
+                <select name="status" required>
+                    <option value="to do">To Do</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
 
-			<select name="assignee">
-				<option value="">-- Unassigned --</option>
-			</select>
+                <select name="assignee">
+                    <option value="">-- Unassigned --</option>
+                </select>
 
-			<button type="submit">Create Task</button>
-		</form>
+                <button type="submit">Create Task</button>
+            </form>
+        </main>
+        <footer>
+            <p>TaskFlow &copy; 2026</p>
+        </footer>
 
-		<script>
-		</script>
-	</body>
+        <script>
+        </script>
+    </body>
 </html>

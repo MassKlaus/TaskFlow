@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow</title>
-    <link rel="stylesheet" href="/assets/app.css">
+    <link rel="stylesheet" href="/assets/global.css">
     <script src="vendor/axios.min.js" defer></script>
     <script src="assets/js/common.js" defer></script>
     <script src="assets/js/register.js" defer></script>
@@ -28,25 +28,25 @@
         </nav>
     </header>
     <main>
-        <div>
-            <h2>Register</h2>
-            <form id="register-form" class="auth-form">
-                <div>
-                    <label for="fullName">Full Name:</label>
-                    <input type="text" id="fullName" name="fullName" required>
-                </div>
-
-                <div>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit">Register</button>
-            </form>
+        <div class="auth-page">
+            <div class="auth-box">
+                <h2>Register</h2>
+                <form id="register-form">
+                    <div>
+                        <label for="fullName">Full Name:</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    <div>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
         </div>
     </main>
     <footer>

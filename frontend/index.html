@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow</title>
-    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="assets/global.css">
     <script src="vendor/axios.min.js" defer></script>
     <script src="assets/js/common.js" defer></script>
 </head>
@@ -19,13 +19,24 @@
                 <a href="/register.html" class="primary-text">Register</a>
             </div>
             <div id="authed-links">
-                <a href="/profile.html" class="primary-text">Dashboard</a>
+                <a href="/dashboard.html">Dashboard</a>
                 <a href="#" id="logout-link" class="primary-text">Logout</a>
             </div>
         </nav>
     </header>
-    <main></main>
+    <main>
+        <div class="welcome">
+            <h1>Welcome to TaskFlow</h1>
+            <p>Manage your projects and tasks from one place.</p>
+            <div class="quick-links">
+                <a href="/dashboard.html" class="btn">Dashboard</a>
+                <a href="/projects.html" class="btn">Projects</a>
+                <a href="/task.html" class="btn">Create Task</a>
+            </div>
+        </div>
+    </main>
     <footer>
+        <p>TaskFlow &copy; 2026</p>
     </footer>
 </body>
 </html>
