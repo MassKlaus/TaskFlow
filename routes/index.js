@@ -5,6 +5,7 @@ import { protect } from "../middleware/authMiddleware.js";
 import authRouter from "./auth.js"
 import dashboardRoutes from "./dashboard.js"
 import projectRoutes from "./project.js"
+import notificationRoutes from "./notification.js"
 
 const router = express.Router();
 
@@ -23,6 +24,6 @@ router.get("/my-tasks", protect, async (req, res) => {
     }
 });
 
-// router.use("/projects", projectRoutes);
+router.use("/notifications", notificationRoutes);
 
 export default router;

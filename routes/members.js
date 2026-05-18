@@ -2,6 +2,8 @@ import express from "express";
 import { verifyProjectOwnership } from "../middleware/ownerMiddleware.js";
 import { getUserByEmail } from "../services/user.js";
 import { addMember, getProjectById, removeMember } from "../services/project.js";
+import { logActivity } from "../services/activity.js";
+import { createNotification } from "../services/notification.js";
 
 const router = express.Router({mergeParams: true});
 
@@ -26,6 +28,12 @@ router.post("/", async (req, res) => {
         if (!updatedProject) {
             return res.status(404).json({ error: "Failed to add to project" });
         }
+
+        await logActivity("member_added", req.params.projectId, req.user.userId, { memberId: user._id, memberEmail: email });
+
+        const projectData = await getProjectById(req.params.projectId);
+        const message = `You have been added to project "${projectData.title}"`;
+        await createNotification(user._id, "member_added", message, req.params.projectId);
 
         res.json(updatedProject);
     } catch (err) {
@@ -53,6 +61,7 @@ router.delete("/:userId", async (req, res) => {
             return res.status(404).json({ error: "Project not found" });
         }
 
+        await logActivity("member_removed", req.params.projectId, req.user.userId, { memberId: req.params.userId });
         res.json(updatedProject);
     } catch (err) {
         console.error("Error removing member:", err);
