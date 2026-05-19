@@ -14,13 +14,13 @@ function updateStats(data) {
 }
 
 function renderTasks(tasks) {
+  const tasksDiv = $id("tasks");
+  tasksDiv.innerHTML = "";
+
   if (!tasks || tasks.length === 0) {
     tasksDiv.innerHTML = "<p>No tasks found</p>";
     return;
   }
-  
-  const tasksDiv = $id("tasks");
-  tasksDiv.innerHTML = "";
 
   tasks.forEach((task) => {
     const taskCard = document.createElement("div");

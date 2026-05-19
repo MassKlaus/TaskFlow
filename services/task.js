@@ -64,6 +64,7 @@ export const getFilteredTasks = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     const data = await Task.find(filter)
+      .populate("assignee", "fullName email")
       .skip(skip)
       .limit(Number(limit));
 
