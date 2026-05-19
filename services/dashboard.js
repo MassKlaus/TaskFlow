@@ -1,64 +1,41 @@
-// Needs Project/Task models from task 2&3
+import mongoose from "mongoose";
 import Project from "../db/project.js"
 import Task from "../db/task.js"
 
 export const getDashboard = async (req, res) => {
   try {
-    // ACTIVE PROJECTS
-    const activeProjects = await Project.countDocuments({
-      owner: req.user.userId || req.user._id,
-      status: "active",
-    });
+    const userId = new mongoose.Types.ObjectId(req.user.userId);
 
-    // TASK STATS USING AGGREGATION
-    const stats = await Task.aggregate([
-      {
-        $match: {
-          assignee: req.user.userId,
-        },
-      },
-      {
-        $group: {
-          _id: "$status",
-          total: {
-            $sum: 1,
-          },
-        },
-      },
+    const [activeResult] = await Project.aggregate([
+      { $match: { owner: userId, status: "active" } },
+      { $count: "total" },
+    ]);
+    const activeProjects = activeResult?.total ?? 0;
+
+    const taskStats = await Task.aggregate([
+      { $match: { assignee: userId } },
+      { $group: { _id: "$status", count: { $sum: 1 } } },
     ]);
 
     let assignedTasks = 0;
     let completedTasks = 0;
-
-    stats.forEach((item) => {
-      assignedTasks += item.total;
-
-      if (item._id === "done") {
-        completedTasks = item.total;
-      }
+    taskStats.forEach(({ _id, count }) => {
+      assignedTasks += count;
+      if (_id === "done") completedTasks = count;
     });
 
-    // OVERDUE TASKS
-    const overdueTasks = await Task.countDocuments({
-      assignee: req.user.userId,
-      deadline: {
-        $lt: new Date(),
-      },
-      status: {
-        $ne: "done",
-      },
-    });
+    const [overdueResult] = await Task.aggregate([
+      { $match: { assignee: userId, deadline: { $lt: new Date() }, status: { $ne: "done" } } },
+      { $count: "total" },
+    ]);
+    const overdueTasks = overdueResult?.total ?? 0;
 
-    // CURRENT TASKS
     const currentTasks = await Task.find({
       assignee: req.user.userId,
       status: "in progress",
     })
       .populate("project", "title")
-      .sort({
-        priority: -1,
-        deadline: 1,
-      });
+      .sort({ priority: -1, deadline: 1 });
 
     res.status(200).json({
       activeProjects,

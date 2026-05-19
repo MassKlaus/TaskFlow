@@ -31,3 +31,20 @@ axios.interceptors.request.use((config) => {
 
   return config;
 });
+
+axios.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+    return Promise.reject(err);
+  }
+);
+
+document.getElementById("logout-link")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  localStorage.removeItem("token");
+  window.location.href = "/login.html";
+});

@@ -11,23 +11,24 @@ async function loadProject() {
         <p><strong>Status:</strong> ${data.status}</p>
         <p><strong>Description:</strong> ${data.description || "N/A"}</p>
         <p><strong>Deadline:</strong> ${data.deadline ? new Date(data.deadline).toLocaleDateString() : "N/A"}</p>
-        <p><strong>Owner:</strong> ${data.owner}</p>
+        <p><strong>Owner:</strong> ${data.owner?.fullName || data.owner?.email || data.owner}</p>
     `;
 
     const membersList = document.getElementById("members-list");
     const ownerLi = document.createElement("li");
-    ownerLi.textContent = `👑 ${data.owner} (owner)`;
+    ownerLi.textContent = `👑 ${data.owner?.fullName || data.owner?.email || data.owner} (owner)`;
     membersList.innerHTML = "";
     membersList.appendChild(ownerLi);
 
-    data.members?.forEach(id => {
+    data.members?.forEach(m => {
         const li = document.createElement("li");
-        li.textContent = `${id} `;
+        li.textContent = `${m.fullName || m.email || m._id} (${m.email || m._id}) `;
+        li.setAttribute("data-id", m._id);
         const btn = document.createElement("button");
         btn.textContent = "Remove";
         btn.onclick = async () => {
             try {
-                await axios.delete(`/api/projects/${projectId}/members/${id}`);
+                await axios.delete(`/api/projects/${projectId}/members/${m._id}`);
                 loadProject();
             } catch (err) {
                 alert("Error: " + (err.response?.data?.error || err.message));
@@ -35,6 +36,19 @@ async function loadProject() {
         };
         li.appendChild(btn);
         membersList.appendChild(li);
+    });
+
+    populateAssigneeSelects(data);
+}
+
+function populateAssigneeSelects(project) {
+    const users = [project.owner, ...(project.members || [])].filter(Boolean);
+    const options = users.map(u =>
+        `<option value="${u._id}">${u.fullName || u.email}</option>`
+    ).join("");
+    document.querySelectorAll("#create-task-form [name=assignee], #filter-form [name=assignee]").forEach(sel => {
+        const defaultVal = sel.options[0].value;
+        sel.innerHTML = `<option value="${defaultVal}">${defaultVal === "" ? "Unassigned" : "All"}</option>` + options;
     });
 }
 
@@ -78,13 +92,14 @@ document.getElementById("create-task-form").addEventListener("submit", async (e)
 
 async function loadTasks() {
     const container = document.getElementById("task-list");
+    container.style.cssText = "";
     try {
         const { data } = await axios.get(`/api/projects/${projectId}/tasks/filter`, { params: filterData });
         container.innerHTML = (data.data || data).map(t => `
-            <div style="border:1px solid #ccc; margin:8px; padding:8px;">
-                <strong>${t.title}</strong>
+            <div style="background:#f9fafb; border:1px solid #e2e8f0; border-radius:8px; padding:12px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+                <strong style="font-size:1.05rem;">${t.title}</strong>
                 <br>Status: ${t.status} | Priority: ${t.priority}
-                <br>Assignee: ${t.assignee?.fullName || t.assignee || "Unassigned"}
+                <br>Assignee: ${t.assignee?.fullName || t.assignee?.email || "Unassigned"}
                 <br>
                 <button onclick="updateStatus('${t._id}','to do')">To Do</button>
                 <button onclick="updateStatus('${t._id}','in progress')">In Progress</button>
@@ -121,19 +136,19 @@ function describeActivity(a) {
     const time = new Date(a.createdAt).toLocaleString();
     switch (a.action) {
         case "task_created":
-            return `${name} created task "${d.taskTitle}" — ${time}`;
+            return `${name} created task "${d.taskTitle}" - ${time}`;
         case "task_deleted":
-            return `${name} deleted task "${d.taskTitle}" — ${time}`;
+            return `${name} deleted task "${d.taskTitle}" - ${time}`;
         case "task_status_changed":
-            return `${name} changed status of "${d.taskTitle}" to "${d.newStatus}" — ${time}`;
+            return `${name} changed status of "${d.taskTitle}" to "${d.newStatus}" - ${time}`;
         case "member_added":
-            return `${name} added member ${d.memberEmail || d.memberId} — ${time}`;
+            return `${name} added member ${d.memberEmail || d.memberId} - ${time}`;
         case "member_removed":
-            return `${name} removed a member — ${time}`;
+            return `${name} removed a member - ${time}`;
         case "project_updated":
-            return `${name} updated the project — ${time}`;
+            return `${name} updated the project - ${time}`;
         default:
-            return `${name} performed ${a.action} — ${time}`;
+            return `${name} performed ${a.action} - ${time}`;
     }
 }
 

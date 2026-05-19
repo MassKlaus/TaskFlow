@@ -65,6 +65,9 @@ router.get("/:id", async (req, res) => {
             return res.status(403).json({ error: "Forbidden: You do not own this project" });
         }
         
+        await project.populate("members", "fullName email");
+        await project.populate("owner", "fullName email");
+
         res.json(project);
     } catch (err) {
         console.error("Error fetching project:", err);
